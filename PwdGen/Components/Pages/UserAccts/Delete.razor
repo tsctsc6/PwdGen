@@ -1,0 +1,90 @@
+﻿@page "/UserAccts/Delete"
+@using PwdGen.Models
+@using System.Text.Json
+@inject NavigationManager navigationManager
+
+<h3>Delete</h3>
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            UserName
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.UserName
+        </dd>
+        <dt class="col-sm-3">
+            Sub-Password
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.SubPwd
+        </dd>
+        <dt class="col-sm-3">
+            Password Length
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.PwdLen
+        </dd>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseNumbers" disabled="true" />
+            Numbers
+        </label>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseLowercaseLetters" disabled="true" />
+            LowercaseLetters
+        </label>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseUppercaseLetters" disabled="true" />
+            UppercaseLetters
+        </label>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseSpecialCharacters" disabled="true" />
+            SpecialCharacters
+        </label>
+        <dt class="col-sm-3">
+            HashAlgorithm
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.hashALG
+        </dd>
+        <dt class="col-sm-3">
+            Comment
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.Comment
+        </dd>
+        <dt class="col-sm-3">
+            Create Time
+        </dt>
+        <dd class="col-sm-10">
+            @DateTime.FromBinary(acctData.CreateTime)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="/UserAccts/Edit?Time=@acctData.CreateTime">Edit</a>
+    <input type="button" value="Delete" class="btn btn-danger" @onclick="OnDeleteAsync" disabled="@Delete_Disabled" />
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "Time")]
+    public long? Time { get; set; }
+
+    private AcctData acctData = new();
+
+    private bool Delete_Disabled = false;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        acctData = App.AcctDatas.Single(a => a.CreateTime == Time);
+    }
+
+    private async Task OnDeleteAsync()
+    {
+        Delete_Disabled = true;
+        App.AcctDatas.Remove(acctData);
+        await File.WriteAllBytesAsync(App._fileName_UserAcct, JsonSerializer.SerializeToUtf8Bytes(App.AcctDatas, App._jso));
+        navigationManager.NavigateTo("/UserAccts");
+    }
+}

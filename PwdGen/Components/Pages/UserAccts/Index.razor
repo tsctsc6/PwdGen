@@ -1,0 +1,82 @@
+﻿@page "/UserAccts"
+@using PwdGen.Models
+<h3>User Accounts</h3>
+<NavLink class="nav-link" href="/UserAccts/Create">Create</NavLink>
+<EditForm Model="Input" OnValidSubmit="Search">
+    <InputText @bind-Value="Input.SearchString" class="form-control" autocomplete="off" />
+    <label>
+        <InputCheckbox @bind-Value="Input.SearchUserName" />
+        UserName
+    </label>
+    <label>
+        <InputCheckbox @bind-Value="Input.SearchSubPwd" />
+        SubPwd
+    </label>
+    <label>
+        <InputCheckbox @bind-Value="Input.SearchComment" />
+        Comment
+    </label>
+    <button type="submit" class="btn btn-primary">Search</button>
+</EditForm>
+<hr/>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                UserName
+            </th>
+            <th>
+                Sub-Password
+            </th>
+            <th>
+                Comment
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in acctDatas)
+        {
+            <tr>
+                <td>
+                    @item.UserName
+                </td>
+                <td>
+                    @item.SubPwd
+                </td>
+                <td>
+                    @item.Comment
+                </td>
+                <td>
+                    <p>
+                        <a href="/UserAccts/Details?Time=@item.CreateTime">Details</a> |
+                        <a href="/UserAccts/Edit?Time=@item.CreateTime">Edit</a> |
+                        <a href="/UserAccts/Delete?Time=@item.CreateTime">Delete</a>
+                    </p>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    private InputModel Input { get; set; } = new();
+    internal sealed class InputModel
+    {
+        public string? SearchString { get; set; }
+        public bool SearchUserName { get; set; } = true;
+        public bool SearchSubPwd { get; set; } = true;
+        public bool SearchComment { get; set; } = true;
+    }
+
+    private List<AcctData> acctDatas = App.AcctDatas;
+
+    private void Search()
+    {
+        if (!string.IsNullOrEmpty(Input.SearchString))
+            acctDatas = App.AcctDatas.Where(a =>
+                (Input.SearchUserName && a.UserName.Contains(Input.SearchString)) ||
+                (Input.SearchSubPwd && a.SubPwd.Contains(Input.SearchString)) ||
+                (Input.SearchComment && a.Comment.Contains(Input.SearchString))
+            ).ToList();
+        else acctDatas = App.AcctDatas;
+    }
+}

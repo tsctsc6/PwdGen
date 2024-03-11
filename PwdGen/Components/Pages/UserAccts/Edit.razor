@@ -1,0 +1,135 @@
+﻿@page "/UserAccts/Edit"
+@using System.Text.Json
+@using PwdGen.Models
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager navigationManager
+
+<h3>Edit</h3>
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="Input" method="post" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <InputText type="text" @bind-Value="Input.UserName" class="form-control" autocomplete="off" aria-required="true" placeholder="password" />
+                    <label for="password">UserName</label>
+                    <ValidationMessage For="() => Input.UserName" class="text-danger" />
+                </div><div class="form-floating mb-3">
+                    <InputText type="text" @bind-Value="Input.SubPwd" class="form-control" autocomplete="off" aria-required="true" placeholder="password" />
+                    <label for="password">Sub-Password</label>
+                    <ValidationMessage For="() => Input.SubPwd" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputText type="password" @bind-Value="MainPwd" class="form-control" autocomplete="off" aria-required="true" placeholder="password" />
+                    <label for="password">Main Password</label>
+                    <ValidationMessage For="() => Input.SubPwd" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputNumber @bind-Value="Input.PwdLen" class="form-control" autocomplete="off" aria-required="true" placeholder="password" />
+                    <label for="password">Password Length</label>
+                    <ValidationMessage For="() => Input.PwdLen" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <div>
+                        <label>
+                            <InputCheckbox @bind-Value="Input.UseNumbers" />
+                            Numbers
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <InputCheckbox @bind-Value="Input.UseLowercaseLetters" />
+                            LowercaseLetters
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <InputCheckbox @bind-Value="Input.UseUppercaseLetters" />
+                            UppercaseLetters
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <InputCheckbox @bind-Value="Input.UseSpecialCharacters" />
+                            SpecialCharacters
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <InputSelect @bind-Value="Input.hashALG" class="form-control">
+                        <option value="SHA256" class="form-control">SHA256</option>
+                        <option value="SHA384" class="form-control">SHA384</option>
+                        <option value="SHA512" class="form-control">SHA512</option>
+                    </InputSelect>
+                </div>
+                <p></p>
+                <div class="form-floating mb-3">
+                    <InputText type="text" @bind-Value="Input.Comment" class="form-control" autocomplete="off" aria-required="true" placeholder="password" />
+                    <label for="password">Comment</label>
+                    <ValidationMessage For="() => Input.Comment" class="text-danger" />
+                </div>
+                <div>
+                    <button class="btn btn-primary" type="button" @onclick="Generate">Generate</button>
+                    <button class="btn btn-primary" type="submit" disabled="@Save_Disabled">Save</button>
+                </div>
+                <div>
+                    <label>@GeneratedPwd</label>
+                </div>
+            </EditForm>
+            <div>
+                <button class="btn btn-primary" type="button" @onclick="SetClipboard">Copy</button>
+                <button class="btn btn-primary" type="button" @onclick="ClearClipboard">Clear Clipboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "Time")]
+    public long? Time { get; set; }
+
+    [SupplyParameterFromForm]
+    private AcctData Input { get; set; }
+
+    private AcctData AcctData_ref;
+
+    [Required]
+    //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+    [DataType(DataType.Password)]
+    //[Display(Name = "Password Length")]
+    public string MainPwd { get; set; } = "";
+
+    private string GeneratedPwd { get; set; } = "";
+
+    private bool Save_Disabled = false;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        AcctData_ref = App.AcctDatas.Single(a => a.CreateTime == Time);
+        Input = AcctData_ref.ShallowCopy();
+    }
+
+    private void Generate()
+    {
+        GeneratedPwd = Input.Generate(MainPwd);
+    }
+    private async Task SaveAsync()
+    {
+        Save_Disabled = true;
+        App.AcctDatas.Remove(AcctData_ref);
+        Input.CreateTime = DateTime.Now.ToBinary();
+        App.AcctDatas.Add(Input);
+        await File.WriteAllBytesAsync(App._fileName_UserAcct, JsonSerializer.SerializeToUtf8Bytes(App.AcctDatas, App._jso));
+        navigationManager.NavigateTo("/UserAccts");
+    }
+    private async Task SetClipboard()
+    {
+        await Clipboard.Default.SetTextAsync(GeneratedPwd);
+    }
+    private async Task ClearClipboard()
+    {
+        await Clipboard.Default.SetTextAsync(null);
+    }
+}

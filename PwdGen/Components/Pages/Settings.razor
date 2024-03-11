@@ -1,0 +1,91 @@
+﻿@page "/Settings"
+@using CommunityToolkit.Maui.Alerts
+@using CommunityToolkit.Maui.Storage
+@using System.Text.Json
+@using PwdGen.Models
+
+<h3>Settings</h3>
+<hr />
+<h4>备份与还原</h4>
+<EditForm Model="Input" method="post">
+    <button class="btn btn-primary" @onclick="BackupAsync">备份</button>
+    <button class="btn btn-primary" @onclick="RestoreAsync">还原</button>
+    <InputSelect @bind-Value="Input.RestoreType" >
+        <option value="Differential" class="form-control">Differential</option>
+        <option value="Overwrite" class="form-control">Overwrite</option>
+    </InputSelect>
+</EditForm>
+<hr />
+<h4>About</h4>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Name
+        </dt>
+        <dd class="col-sm-10">
+            @AppInfo.Current.Name
+        </dd>
+        <dt class="col-sm-2">
+            Version
+        </dt>
+        <dd class="col-sm-10">
+            @AppInfo.Current.VersionString
+        </dd>
+    </dl>
+</div>
+
+@code {
+    InputModel Input { get; set; } = new();
+    internal sealed class InputModel
+    {
+        public RestoreType RestoreType { get; set; } = RestoreType.Differential;
+    }
+    internal enum RestoreType
+    {
+        Differential,
+        Overwrite,
+    }
+    private async Task BackupAsync()
+    {
+        using var stream = new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(App.AcctDatas, App._jso));
+        var fileSaverResult = await FileSaver.Default.SaveAsync($"Accounts_{DeviceInfo.Current.Name}.json", stream);
+        if (fileSaverResult.IsSuccessful)
+        {
+            await Toast.Make($"The file was saved successfully to location: {fileSaverResult.FilePath}").Show();
+        }
+        else
+        {
+            await Toast.Make($"The file was not saved successfully with error: {fileSaverResult.Exception.Message}").Show();
+        }
+    }
+    private async Task RestoreAsync()
+    {
+        var result = await FilePicker.Default.PickAsync();
+        if (result != null)
+        {
+            if (result.FileName.EndsWith("json"))
+            {
+                using var stream = await result.OpenReadAsync();
+                switch (Input.RestoreType)
+                {
+                    case RestoreType.Differential: 
+                        List<AcctData>? acctDatas = JsonSerializer.Deserialize<List<AcctData>>(stream, App._jso);
+                        if (acctDatas == null)
+                        {
+                            await Toast.Make($"The file was not open successfully with error").Show();
+                            return;
+                        }
+                        var d = acctDatas.ExceptBy(App.AcctDatas.Select(a => a.CreateTime), a => a.CreateTime);
+                        App.AcctDatas.AddRange(d);
+                        await File.WriteAllBytesAsync(App._fileName_UserAcct, JsonSerializer.SerializeToUtf8Bytes(App.AcctDatas, App._jso));
+                        break;
+                    case RestoreType.Overwrite: 
+                        App.AcctDatas = JsonSerializer.Deserialize<List<AcctData>>(stream, App._jso);
+                        await File.WriteAllBytesAsync(App._fileName_UserAcct, JsonSerializer.SerializeToUtf8Bytes(App.AcctDatas, App._jso));
+                        break;
+                    default: throw new ArgumentException(Input.RestoreType.ToString());
+                }
+            }
+        }
+    }
+}

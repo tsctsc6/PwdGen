@@ -1,0 +1,121 @@
+﻿@page "/UserAccts/Details"
+@using PwdGen.Models
+@using System.ComponentModel.DataAnnotations
+
+<h3>Detials</h3>
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            UserName
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.UserName
+        </dd>
+        <dt class="col-sm-3">
+            Sub-Password
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.SubPwd
+        </dd>
+        <dt class="col-sm-3">
+            Password Length
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.PwdLen
+        </dd>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseNumbers" disabled="true" />
+            Numbers
+        </label>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseLowercaseLetters" disabled="true" />
+            LowercaseLetters
+        </label>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseUppercaseLetters" disabled="true" />
+            UppercaseLetters
+        </label>
+        <label>
+            <InputCheckbox @bind-Value="@acctData.UseSpecialCharacters" disabled="true" />
+            SpecialCharacters
+        </label>
+        <dt class="col-sm-3">
+            HashAlgorithm
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.hashALG
+        </dd>
+        <dt class="col-sm-3">
+            Comment
+        </dt>
+        <dd class="col-sm-10">
+            @acctData.Comment
+        </dd>
+        <dt class="col-sm-3">
+            Create Time
+        </dt>
+        <dd class="col-sm-10">
+            @DateTime.FromBinary(acctData.CreateTime)
+        </dd>
+    </dl>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="Input" method="post" OnValidSubmit="Generate">
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Input.MainPwd" class="form-control" autocomplete="off" aria-required="true" placeholder="password" />
+                <label for="password">Main Password</label>
+                <ValidationMessage For="() => Input.MainPwd" class="text-danger" />
+            </div>
+            <div>
+                <button class="btn btn-primary" type="button" @onclick="Generate">Generate</button>
+            </div>
+            <div>
+                <label>@GeneratedPwd</label>
+            </div>
+        </EditForm>
+    </div>
+</div>
+<div>
+    <button class="btn btn-primary" type="button" @onclick="SetClipboard">Copy</button>
+    <button class="btn btn-primary" type="button" @onclick="ClearClipboard">Clear Clipboard</button>
+</div>
+<div>
+    <a href="/UserAccts/Edit?Time=@acctData.CreateTime">Edit</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "Time")]
+    public long? Time { get; set; }
+
+    private AcctData acctData = new();
+
+    private string GeneratedPwd { get; set; } = "";
+
+    private InputModel Input { get; set; } = new();
+    internal sealed class InputModel
+    {
+        [Required]
+        public string MainPwd { get; set; } = "";
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        acctData = App.AcctDatas.Single(a => a.CreateTime == Time);
+    }
+
+    private void Generate()
+    {
+        GeneratedPwd = acctData.Generate(Input.MainPwd);
+    }
+    private async Task SetClipboard()
+    {
+        await Clipboard.Default.SetTextAsync(GeneratedPwd);
+    }
+    private async Task ClearClipboard()
+    {
+        await Clipboard.Default.SetTextAsync(null);
+    }
+}
