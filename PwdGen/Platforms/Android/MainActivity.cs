@@ -20,7 +20,7 @@ namespace PwdGen
                     else
                     {
                         BackPressCounter++;
-                        Toast.MakeText(Android.App.Application.Context, "再按一次退出", ToastLength.Long)!.Show();
+                        Toast.MakeText(Android.App.Application.Context, "Tap again to exit", ToastLength.Long)!.Show();
                         Task.Run(async () =>
                         {
                             await Task.Delay(2000);
