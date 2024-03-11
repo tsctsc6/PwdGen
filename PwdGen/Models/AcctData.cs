@@ -67,11 +67,10 @@ namespace PwdGen.Models
             byte[] main = Encoding.UTF8.GetBytes(MainPwd);
             hashValue1 = hashAlgorithm.ComputeHash([.. sub, .. main]);
             byte[] userName = Encoding.UTF8.GetBytes(UserName);
-            byte[] comment = Encoding.UTF8.GetBytes(Comment);
-            hashValue2 = hashAlgorithm.ComputeHash([.. userName, .. comment]);
+            hashValue2 = hashAlgorithm.ComputeHash(userName);
             hashAlgorithm.Dispose();
 
-            RC4 rc4 = new(AcctData.XOR(hashValue1, hashValue2));
+            RC4 rc4 = new(XOR(hashValue1, hashValue2));
 
             StringBuilder sb = new(PwdLen);
             for (int i = 0; i < PwdLen;)
