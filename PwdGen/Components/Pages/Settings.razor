@@ -6,10 +6,10 @@
 
 <h3>Settings</h3>
 <hr />
-<h4>备份与还原</h4>
+<h4>Backup and restore</h4>
 <EditForm Model="Input" method="post">
-    <button class="btn btn-primary" @onclick="BackupAsync">备份</button>
-    <button class="btn btn-primary" @onclick="RestoreAsync">还原</button>
+    <button class="btn btn-primary" @onclick="BackupAsync">Backup</button>
+    <button class="btn btn-primary" @onclick="RestoreAsync">Restore</button>
     <InputSelect @bind-Value="Input.RestoreType" >
         <option value="Differential" class="form-control">Differential</option>
         <option value="Overwrite" class="form-control">Overwrite</option>
