@@ -55,14 +55,13 @@ namespace PwdGen.Models
                 throw new Exception("Use a character set at least");
             byte[] hashValue1;
             byte[] hashValue2;
-            HashAlgorithm hashAlgorithm;
-            switch (hashALG)
+            HashAlgorithm hashAlgorithm = hashALG switch
             {
-                case HashALG.SHA256: hashAlgorithm = SHA256.Create(); break;
-                case HashALG.SHA384: hashAlgorithm = SHA384.Create(); break;
-                case HashALG.SHA512: hashAlgorithm = SHA512.Create(); break;
-                default: throw new ArgumentException($"Input.hashALG = {hashALG}");
-            }
+                HashALG.SHA256 => SHA256.Create(),
+                HashALG.SHA384 => SHA384.Create(),
+                HashALG.SHA512 => SHA512.Create(),
+                _ => throw new ArgumentException($"Input.hashALG = {hashALG}"),
+            };
             byte[] sub = Encoding.UTF8.GetBytes(SubPwd);
             byte[] main = Encoding.UTF8.GetBytes(MainPwd);
             hashValue1 = hashAlgorithm.ComputeHash([.. sub, .. main]);
