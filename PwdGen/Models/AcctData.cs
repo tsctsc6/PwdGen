@@ -67,7 +67,7 @@ namespace PwdGen.Models
             byte[] main = Encoding.UTF8.GetBytes(MainPwd);
             hashValue1 = hashAlgorithm.ComputeHash([.. sub, .. main]);
             byte[] userName = Encoding.UTF8.GetBytes(UserName);
-            hashValue2 = hashAlgorithm.ComputeHash(userName);
+            hashValue2 = hashAlgorithm.ComputeHash([.. userName, .. main]);
             hashAlgorithm.Dispose();
 
             RC4 rc4 = new(XOR(hashValue1, hashValue2));
