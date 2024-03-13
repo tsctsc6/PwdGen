@@ -1,6 +1,10 @@
 # PwdGen
 * This is a password generator and password manager.
 
+# Purpose
+* Generate strong password by simple string.
+* Generate different passwords by the same string.
+
 ## Usage
 1. Choose a simple password as main password.
 1. Click the navigation bar, choose UserAccts, click create.
