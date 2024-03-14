@@ -16,3 +16,6 @@
 * The generated password is related to the username, sub-password and main password.
 * You can backup and restore data in settings.
 
+## Data Flow(substandard)
+![](./img/DF.svg)
+
