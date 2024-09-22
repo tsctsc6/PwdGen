@@ -1,7 +1,7 @@
 # PwdGen
 * This is a password generator and manager.
 
-# Purpose
+## Purpose
 * Generate strong password by simple string.
 * Generate different passwords by the same string.
 
