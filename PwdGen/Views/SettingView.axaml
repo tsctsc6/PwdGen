@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PwdGen.Views.SettingView"
 	         x:DataType="vm:SettingViewModel">
-	<Grid RowDefinitions="auto, auto, auto, *" Margin="10">
+	<Grid RowDefinitions="auto, auto, *" Margin="10">
 		<Grid Grid.Row="0" ColumnDefinitions="auto, auto, *" Margin="0 5">
 			<Button Grid.Column="0" Content="&lt;" Command="{Binding BackCommand}"/>
 			<TextBlock Grid.Column="1" Text="Setting" VerticalAlignment="Center" Margin="10 0"/>
@@ -15,6 +15,5 @@
 			<Button Grid.Column="0" Content="Backup" Command="{Binding BackupCommand}"/>
 			<Button Grid.Column="1" Content="Restore" Command="{Binding RestoreCommand}"/>
 		</Grid>
-		<TextBlock Grid.Row="2" Text="{Binding Message}" TextWrapping="Wrap"/>
 	</Grid>
 </UserControl>

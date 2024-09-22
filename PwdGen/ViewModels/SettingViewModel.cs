@@ -1,5 +1,4 @@
 ﻿using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PwdGen.Services;
 
@@ -7,9 +6,6 @@ namespace PwdGen.ViewModels;
 
 public partial class SettingViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private string message = PwdGenDbService.DatabasePath;
-
     [RelayCommand]
     private void Back()
     {
@@ -32,7 +28,6 @@ public partial class SettingViewModel : ViewModelBase
             }]
         });
         if (file is null) return;
-        Message = $"{file.Path}\n{file.Path.AbsolutePath}\nfile://{PwdGenDbService.DatabasePath}";
         await App.Current.DbService.CloseAsync();
         await using var localStream = new FileStream(PwdGenDbService.DatabasePath, FileMode.Open);
         await using var backupSteam = await file.OpenWriteAsync();
