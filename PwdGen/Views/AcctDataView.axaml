@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:PwdGen.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PwdGen.Views.AcctDataView"
+			 x:DataType="vm:AcctDataViewModel">
+	<Grid RowDefinitions="auto, auto, *, auto" Margin="10">
+		<Grid Grid.Row="0" ColumnDefinitions="auto, auto" Margin="0 5">
+			<Button Grid.Column="0" Content="Add" Command="{Binding ViewAcctDataAddCommand}"/>
+			<Button Grid.Column="1" Content="Setting" Command="{Binding ViewSettingCommand}"/>
+		</Grid>
+		<Grid Grid.Row="1" ColumnDefinitions="*, auto">
+			<TextBox Grid.Column="0" Text="{Binding SearchString}"/>
+			<Button Grid.Column="1" Content="Search" Command="{Binding SearchCommand}"/>
+		</Grid>
+		<ScrollViewer Grid.Row="2">
+			<DataGrid ItemsSource="{Binding AcctDataList}"
+					  AutoGenerateColumns="False"
+					  IsReadOnly="True">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="User Name" Width="*" Binding="{Binding UserName}"/>
+					<DataGridTextColumn Header="Platform" Width="*" Binding="{Binding Platform}"/>
+					<DataGridTemplateColumn Header="Detail">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button Content="Detail"
+										Command="{Binding $parent[UserControl].((vm:AcctDataViewModel)DataContext).ViewDetailCommand}"
+										CommandParameter="{Binding}"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</ScrollViewer>
+		<Grid Grid.Row="3" ColumnDefinitions="auto, auto, auto, auto, auto, auto, auto" HorizontalAlignment="Center">
+			<Button Grid.Column="0" Content="&lt;" Command="{Binding PrePageCommand}"/>
+			<TextBox Grid.Column="1" Text="{Binding CurrentPage}"/>
+			<Button Grid.Column="2" Content="&gt;" Command="{Binding NextPageCommand}"/>
+			<TextBlock Grid.Column="3" Text="{Binding MaxPage}" VerticalAlignment="Center" Margin="10 0"/>
+			<Button Grid.Column="4" Content="Jump" Command="{Binding JumpCommand}" Margin="5 0"/>
+			<TextBox Grid.Column="5" Text="{Binding PerPage}"/>
+			<TextBlock Grid.Column="6" Text="{Binding TotolCount}" VerticalAlignment="Center" Margin="10 0"/>
+		</Grid>
+	</Grid>
+</UserControl>

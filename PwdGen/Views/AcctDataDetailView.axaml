@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:c="clr-namespace:PwdGen.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PwdGen.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PwdGen.Views.AcctDataDetailView"
+			 x:DataType="vm:AcctDataDetailViewModel">
+	<UserControl.Resources>
+		<c:BinaryDateTimeConverter x:Key="BinaryDateTimeConverter"/>
+	</UserControl.Resources>
+	<Grid RowDefinitions="auto, *, auto, auto" Margin="10">
+		<Grid Grid.Row="0" ColumnDefinitions="auto, *, auto" Margin="0 5">
+			<Button Grid.Column="0" Content="&lt;" Command="{Binding BackCommand}"/>
+			<Button Grid.Column="2" Content="Edit" Command="{Binding EditCommand}"/>
+		</Grid>
+		<ScrollViewer Grid.Row="1">
+			<Grid RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, auto, auto"
+				  ColumnDefinitions="*, *">
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="User Name" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AcctData.UserName}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="Platform" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AcctData.Platform}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Remark" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AcctData.Remark}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="3" Grid.Column="0" Text="Skip Count" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AcctData.SkipCount}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Use Up Letter" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding AcctData.UseUpLetter}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="5" Grid.Column="0" Text="Use Low Letter" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding AcctData.UseLowLetter}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="6" Grid.Column="0" Text="Use Number" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding AcctData.UseNumber}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="7" Grid.Column="0" Text="Use Special Character" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding AcctData.UseSpChar}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="8" Grid.Column="0" Text="Password Length" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding AcctData.PwdLen}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="9" Grid.Column="0" Text="Create Time" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding AcctData.CreateTime, Converter={StaticResource BinaryDateTimeConverter}}" TextWrapping="Wrap"/>
+			</Grid>
+		</ScrollViewer>
+		<Grid Grid.Row="2" ColumnDefinitions="*, auto">
+			<TextBox Grid.Column="0" PasswordChar="*" Text="{Binding MainPassword}"/>
+			<Button Grid.Column="1" Content="Gen" Command="{Binding GenPwdCommand}"/>
+		</Grid>
+		<Grid Grid.Row="3" ColumnDefinitions="*, auto">
+			<TextBlock Grid.Column="0" Text="{Binding Password}"/>
+			<Button Grid.Column="1" Content="Copy" Command="{Binding CopyCommand}"/>
+		</Grid>
+	</Grid>
+</UserControl>

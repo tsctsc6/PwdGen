@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PwdGen.ViewModels"
+			 xmlns:pgc="clr-namespace:Avalonia.PropertyGrid.Controls;assembly=Avalonia.PropertyGrid"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PwdGen.Views.AcctDataAddView"
+			 x:DataType="vm:AcctDataAddViewModel">
+	<Grid RowDefinitions="auto, *, auto, auto" Margin="10">
+		<Grid Grid.Row="0" ColumnDefinitions="auto, auto, *, auto" Margin="0 5">
+			<Button Grid.Column="0" Content="&lt;" Command="{Binding BackCommand}"/>
+			<TextBlock Grid.Column="1" Text="Add Account" VerticalAlignment="Center" Margin="10 0"/>
+			<Button Grid.Column="3" Content="Save" Command="{Binding SaveCommand}"/>
+		</Grid>
+		<ScrollViewer Grid.Row="1">
+			<pgc:PropertyGrid DataContext="{Binding InputAcctData}"/>
+		</ScrollViewer>
+		<Grid Grid.Row="2" ColumnDefinitions="*, auto">
+			<TextBox Grid.Column="0" PasswordChar="*" Text="{Binding MainPassword}"/>
+			<Button Grid.Column="1" Content="Gen" Command="{Binding GenPwdCommand}"/>
+		</Grid>
+		<Grid Grid.Row="3" ColumnDefinitions="*, auto">
+			<TextBlock Grid.Column="0" Text="{Binding Password}"/>
+			<Button Grid.Column="1" Content="Copy" Command="{Binding CopyCommand}"/>
+		</Grid>
+	</Grid>
+</UserControl>
