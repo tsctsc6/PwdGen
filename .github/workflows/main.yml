@@ -31,8 +31,8 @@ jobs:
 
     - name: Get Path
       run: |
-        $Path = ${{ github.workspace }}\release\dotnet_release.zip -replace '\\','/'
-        $Path2 = ${{ github.workspace }}\release\dotnet_sha256.txt -replace '\\','/'
+        $Path = ${{ github.workspace }}\release\dotnet_release.zip -replace '\','/'
+        $Path2 = ${{ github.workspace }}\release\dotnet_sha256.txt -replace '\','/'
     
     - name: Create GitHub Release
       id: create_release
