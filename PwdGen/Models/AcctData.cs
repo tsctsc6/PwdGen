@@ -60,7 +60,7 @@ public class AcctData
     [Range(1, 255)]
     [DisplayName("Password Length")]
     [NotNull]
-    public int PwdLen { get; set; } = 10;
+    public int PwdLen { get; set; } = 15;
 
     [Browsable(false)]
     [DisplayName("Date modified")]
