@@ -17,7 +17,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Publish .NET application
-      run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/temp_release --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
+      run: dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/temp_release --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
 
     - name: Create .NET Release ZIP
       run: |
