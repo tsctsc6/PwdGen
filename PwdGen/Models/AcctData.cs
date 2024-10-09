@@ -63,9 +63,9 @@ public class AcctData
     public int PwdLen { get; set; } = 10;
 
     [Browsable(false)]
-    [DisplayName("Create Time")]
+    [DisplayName("Date modified")]
     [NotNull]
-    public long CreateTime { get; set; }
+    public long DateModified { get; set; }
 
     public readonly static string[] SpChars =
         ["~", "!", "@", "#", "$", "%", "^", "&", "*", "_",
@@ -88,81 +88,48 @@ public class AcctData
         UseNumber = item.UseNumber;
         UseSpChar = item.UseSpChar;
         PwdLen = item.PwdLen;
-        CreateTime = item.CreateTime;
+        DateModified = item.DateModified;
+    }
+
+    public string[] GetAllChars()
+    {
+        IEnumerable<string> returnValue = [];
+        List<string> UpLetters = new(10);
+        List<string> LowLetters = new(10);
+        List<string> Numbers = new(10);
+        for (int i = 0; i < 25; i++) UpLetters.Add(Encoding.ASCII.GetString([(byte)(i + 65)]));
+        for (int i = 0; i < 25; i++) LowLetters.Add(Encoding.ASCII.GetString([(byte)(i + 97)]));
+        for (int i = 0; i < 10; i++) Numbers.Add(i.ToString());
+        if (UseUpLetter) returnValue = returnValue.Concat(UpLetters);
+        if (UseLowLetter) returnValue = returnValue.Concat(LowLetters);
+        if (UseNumber) returnValue = returnValue.Concat(Numbers);
+        if (UseSpChar) returnValue = returnValue.Concat(SpChars);
+        return returnValue.ToArray();
     }
 
     public string Generate(string MainPassword)
     {
-        if (!(UseNumber || UseUpLetter || UseLowLetter || UseSpChar))
-            throw new Exception("Use a character set at least");
-        byte[] hashValue1 = SHA512.HashData(Encoding.UTF8.GetBytes(UserName + MainPassword));
-        byte[] hashValue2 = SHA512.HashData(Encoding.UTF8.GetBytes(MainPassword + Platform));
-        RC4 rc4 = new(Utilities.Utilities.XOR(hashValue1, hashValue2).ToArray());
+        var chars = GetAllChars();
+        if (chars.Length == 0) throw new Exception("Use a character set at least");
+        byte[] hashValue1 = SHA512.HashData(Encoding.UTF8.GetBytes($"UserName:{UserName}{MainPassword}"));
+        byte[] hashValue2 = SHA512.HashData(Encoding.UTF8.GetBytes($"Platform:{MainPassword}{Platform}"));
+        RC4 rc4 = new(Utility.XOR(hashValue1, hashValue2).ToArray());
         StringBuilder sb = new(PwdLen);
         using var rc4Enumerator = rc4.GetEnumerator();
+        if (!rc4Enumerator.MoveNext()) throw new Exception();
+        for (int sc = 0; sc < SkipCount; sc++)
+        {
+            if (!rc4Enumerator.MoveNext()) throw new Exception();
+        }
         for (int i = 0; i < PwdLen;)
         {
-            string c = string.Empty;
             int k = -1;
-            if (!rc4Enumerator.MoveNext()) throw new Exception();
-            for(int sc = 0; sc < SkipCount; sc++)
+            while (k == -1)
             {
+                k = Utility.Uniformly256(rc4Enumerator.Current, chars.Length);
                 if (!rc4Enumerator.MoveNext()) throw new Exception();
             }
-            switch (rc4Enumerator.Current % 4)
-            {
-                case 0:
-                    if (UseUpLetter)
-                    {
-                        while (k == -1)
-                        {
-                            k = Utilities.Utilities.Uniformly256(rc4Enumerator.Current, 26);
-                            if (!rc4Enumerator.MoveNext()) throw new Exception();
-                        }
-                        byte[] ks = [(byte)(k + 65)];
-                        sb.Append(Encoding.ASCII.GetString(ks));
-                        break;
-                    }
-                    else continue;
-                case 1:
-                    if (UseLowLetter)
-                    {
-                        while (k == -1)
-                        {
-                            k = Utilities.Utilities.Uniformly256(rc4Enumerator.Current, 26);
-                            if (!rc4Enumerator.MoveNext()) throw new Exception();
-                        }
-                        byte[] ks = [(byte)(k + 97)];
-                        sb.Append(Encoding.ASCII.GetString(ks));
-                        break;
-                    }
-                    else continue;
-                case 2:
-                    if (UseNumber)
-                    {
-                        while (k == -1)
-                        {
-                            k = Utilities.Utilities.Uniformly256(rc4Enumerator.Current, 10);
-                            if (!rc4Enumerator.MoveNext()) throw new Exception();
-                        }
-                        sb.Append(k);
-                        break;
-                    }
-                    else continue;
-                case 3:
-                    if (UseSpChar)
-                    {
-                        while (k == -1)
-                        {
-                            k = Utilities.Utilities.Uniformly256(rc4Enumerator.Current, SpChars.Length);
-                            if (!rc4Enumerator.MoveNext()) throw new Exception();
-                        }
-                        sb.Append(SpChars[k]);
-                        break;
-                    }
-                    else continue;
-            }
-            sb.Append(c);
+            sb.Append(chars[k]);
             i++;
         }
         return sb.ToString();
