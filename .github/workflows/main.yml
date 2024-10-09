@@ -16,9 +16,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore .NET dependencies
-      run: dotnet restore
-
     - name: Publish .NET application
       run: dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/temp_release --no-self-contained --publish-single-file true --no-restore --no-ready-to-run
 
