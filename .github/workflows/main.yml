@@ -21,12 +21,13 @@ jobs:
 
     - name: Create .NET Release ZIP
       run: |
+        mkdir ${{ github.workspace }}/release
         zip -r ${{ github.workspace }}/release/dotnet_release.zip ${{ github.workspace }}/temp_release/*
 
     - name: Calculate .NET ZIP SHA256
       id: dotnet_sha256
       run: |
-        sha256sum ${{ github.workspace }}/release/dotnet_release.zip | awk '{ print $1 }' > ${{ github.workspace }}/release/dotnet_sha256.txt
+        sha256sum ${{ github.workspace }}/release/dotnet_release.zip > ${{ github.workspace }}/release/dotnet_sha256.txt
     
     - name: Create GitHub Release
       id: create_release
