@@ -38,7 +38,7 @@ jobs:
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.Workflow }}
 
     - name: Upload Release Assets
       uses: softprops/action-gh-release@v1
@@ -48,4 +48,4 @@ jobs:
           ${{ github.workspace }}\release\dotnet_sha256.txt
         tag_name: v1.1.0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.Workflow }}
