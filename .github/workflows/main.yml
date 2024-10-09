@@ -21,7 +21,7 @@ jobs:
 
     - name: Create .NET Release ZIP
       run: |
-        Compress-Archive -Path ${{ github.workspace }}\temp_release -DestinationPath ${{ github.workspace }}\release\dotnet_release.zip
+        Compress-Archive -Path "${{ github.workspace }}\temp_release\*" -DestinationPath "${{ github.workspace }}\release\dotnet_release.zip"
 
     - name: Calculate .NET ZIP SHA256
       id: dotnet_sha256
