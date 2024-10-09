@@ -24,7 +24,7 @@ public partial class AcctDataAddViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveAsync()
     {
-        InputAcctData.CreateTime = DateTime.UtcNow.ToBinary();
+        InputAcctData.DateModified = DateTime.UtcNow.ToBinary();
         var r = await App.Current.DbService.InsertAsync(InputAcctData);
         App.Current.MainViewModel.Back();
         if (r == 0) return;

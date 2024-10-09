@@ -37,7 +37,7 @@
 				<TextBlock Grid.Row="8" Grid.Column="0" Text="Password Length" TextWrapping="Wrap"/>
 				<TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding AcctData.PwdLen}" TextWrapping="Wrap"/>
 				<TextBlock Grid.Row="9" Grid.Column="0" Text="Create Time" TextWrapping="Wrap"/>
-				<TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding AcctData.CreateTime, Converter={StaticResource BinaryDateTimeConverter}}" TextWrapping="Wrap"/>
+				<TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding AcctData.DateModified, Converter={StaticResource BinaryDateTimeConverter}}" TextWrapping="Wrap"/>
 			</Grid>
 		</ScrollViewer>
 		<Grid Grid.Row="2" ColumnDefinitions="*, auto">

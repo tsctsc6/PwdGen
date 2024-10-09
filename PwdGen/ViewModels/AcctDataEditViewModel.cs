@@ -29,6 +29,7 @@ public partial class AcctDataEditViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveAsync()
     {
+        AcctData.DateModified = DateTime.UtcNow.ToBinary();
         var r = await App.Current.DbService.UpdateAsync(AcctData);
         App.Current.MainViewModel.Back();
         if (r == 0) return;
