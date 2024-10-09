@@ -1,0 +1,75 @@
+name: Publish .NET 8 and Xamarin Android Application
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore .NET dependencies
+      run: dotnet restore
+
+    - name: Publish .NET application
+      run: dotnet publish YourDotNetProject.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/temp_release --no-self-contained --publish-single-file true --no-restore --no-ready-to-run
+
+    - name: Setup Xamarin Android
+      run: |
+        choco install dotnet-sdk --version 8.0.x  # 安装 .NET SDK
+        choco install android-sdk --version 34.0  # 根据需要选择版本
+
+    - name: Build Xamarin Android project
+      run: |
+        msbuild YourXamarinProject.sln /p:Configuration=Release /p:Platform="Any CPU" /p:OutputPath=${{ github.workspace }}/temp_xamarin_release
+
+    - name: Create .NET Release ZIP
+      run: |
+        zip -r dotnet_release.zip ${{ github.workspace }}/temp_release/*
+        mv dotnet_release.zip ${{ github.workspace }}/release/
+
+    - name: Create Android Release ZIP
+      run: |
+        zip -r android_release.zip ${{ github.workspace }}/temp_xamarin_release/*.apk
+        mv android_release.zip ${{ github.workspace }}/release/
+
+    - name: Calculate .NET ZIP SHA256
+      id: dotnet_sha256
+      run: |
+        sha256sum ${{ github.workspace }}/release/dotnet_release.zip | awk '{ print $1 }' > ${{ github.workspace }}/release/dotnet_sha256.txt
+
+    - name: Calculate Android ZIP SHA256
+      id: android_sha256
+      run: |
+        sha256sum ${{ github.workspace }}/release/android_release.zip | awk '{ print $1 }' > ${{ github.workspace }}/release/android_sha256.txt
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.1.0
+        release_name: Release v1.1.0
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Release Assets
+      uses: softprops/action-gh-release@v1
+      with:
+        upload_assets: |
+          ${{ github.workspace }}/release/dotnet_release.zip
+          ${{ github.workspace }}/release/android_release.zip
+          ${{ github.workspace }}/release/dotnet_sha256.txt
+          ${{ github.workspace }}/release/android_sha256.txt
+        tag_name: v1.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
