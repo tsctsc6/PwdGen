@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
@@ -17,22 +17,16 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Publish .NET application
-      run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}\temp_release --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
+      run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/temp_release --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
 
     - name: Create .NET Release ZIP
       run: |
-        New-Item -ItemType Directory -Path "${{ github.workspace }}\release"
-        Compress-Archive -Path "${{ github.workspace }}\temp_release" -DestinationPath "${{ github.workspace }}\release\dotnet_release.zip"
+        zip -r ${{ github.workspace }}/release/dotnet_release.zip ${{ github.workspace }}/temp_release/*
 
     - name: Calculate .NET ZIP SHA256
       id: dotnet_sha256
       run: |
-        sha256sum ${{ github.workspace }}\release\dotnet_release.zip | awk '{ print $1 }' > ${{ github.workspace }}\release\dotnet_sha256.txt
-
-    - name: Get Path
-      run: |
-        $Path = ${{ github.workspace }}\release\dotnet_release.zip -replace '\','/'
-        $Path2 = ${{ github.workspace }}\release\dotnet_sha256.txt -replace '\','/'
+        sha256sum ${{ github.workspace }}/release/dotnet_release.zip | awk '{ print $1 }' > ${{ github.workspace }}/release/dotnet_sha256.txt
     
     - name: Create GitHub Release
       id: create_release
@@ -43,7 +37,7 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          $Path
-          $Path2
+          ${{ github.workspace }}/release/dotnet_release.zip
+          ${{ github.workspace }}/release/dotnet_sha256.txt
       env:
         GITHUB_TOKEN: ${{ secrets.Workflow }}
