@@ -29,6 +29,11 @@ jobs:
       run: |
         sha256sum ${{ github.workspace }}\release\dotnet_release.zip | awk '{ print $1 }' > ${{ github.workspace }}\release\dotnet_sha256.txt
 
+    - name: Get Path
+      run: |
+        $Path = ${{ github.workspace }}\release\dotnet_release.zip -replace '\\','/'
+        $Path2 = ${{ github.workspace }}\release\dotnet_sha256.txt -replace '\\','/'
+    
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
@@ -38,7 +43,7 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ${{ github.workspace }}\\release\\dotnet_release.zip
-          ${{ github.workspace }}\\release\\dotnet_sha256.txt
+          $Path
+          $Path2
       env:
         GITHUB_TOKEN: ${{ secrets.Workflow }}
