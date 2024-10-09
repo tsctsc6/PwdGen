@@ -1,4 +1,4 @@
-name: Publish .NET 8 and Xamarin Android Application
+name: Publish .NET 8 Windows Application
 
 on:
   workflow_dispatch:
