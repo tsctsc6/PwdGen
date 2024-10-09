@@ -1,6 +1,6 @@
 ﻿namespace PwdGen.Utilities;
 
-public static class Utilities
+public static class Utility
 {
     public static IEnumerable<byte> XOR(IEnumerable<byte> bytes1, IEnumerable<byte> bytes2)
     {
