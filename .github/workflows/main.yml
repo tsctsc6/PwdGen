@@ -31,8 +31,8 @@ jobs:
 
     - name: Gen body
       run: |
-        t = "win-x64 SHA256 "
-        sha256 = ${(cat file.txt):0:32}
+        echo "t='win-x64 SHA256 '" >> $GITHUB_ENV
+        echo "sha256 = ${(cat file.txt):0:32}" >> $GITHUB_ENV
         $t$sha256 > ${{ github.workspace }}/release/body.txt
     
     - name: Create GitHub Release
