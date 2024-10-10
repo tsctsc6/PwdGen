@@ -16,6 +16,9 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    - name: Setup MSJDK 17
+      run: winget install Microsoft.OpenJDK.17
+
     - name: Publish win-x64 application
       run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output .\PwdGen-win-x64 --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
 
@@ -29,6 +32,16 @@ jobs:
       run: |
         Get-FileHash .\release\PwdGen-win-x64.zip  | Format-List > .\release\PwdGen-sha256.txt
     
+    - name: Get Keystroe
+      run: |
+        [System.IO.File]::WriteAllBytes(".\.keystore", [Convert]::FromBase64String(${{ secrets.TSCTSC6_KEYSTORE_BASE64 }}))
+        ${{ secrets.ANDROIDSIGNINGPASSWORD }} > .\pwd.txt
+
+    - name: Publish Android application
+      run: |
+        dotnet publish .\PwdGen.Desktop\PwdGen.Android.csproj --output .\PwdGen-android -f net8.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=.\keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=file:.\pwd.txt -p:AndroidSigningStorePass=file:.\pwd.txt
+        ls
+        
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
@@ -41,5 +54,6 @@ jobs:
         fail_on_unmatched_files: true
         files: |
           ./release/PwdGen-win-x64.zip
+          ./PwdGen-android/com.tsctsc6.PwdGen-signed.apk
       env:
         GITHUB_TOKEN: ${{ secrets.Workflow }}
