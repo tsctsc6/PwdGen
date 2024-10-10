@@ -22,7 +22,7 @@ jobs:
     - name: Create .NET Release ZIP
       run: |
         mkdir ${{ github.workspace }}/release
-        zip -r ${{ github.workspace }}/release/PwdGen-win-x64.zip ${{ github.workspace }}/PwdGen-win-x64/*
+        zip -j ${{ github.workspace }}/release/PwdGen-win-x64.zip ${{ github.workspace }}/PwdGen-win-x64/*
 
     - name: Calculate .NET ZIP SHA256
       id: sha256
