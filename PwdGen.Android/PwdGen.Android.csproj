@@ -12,9 +12,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AndroidKeyStore>False</AndroidKeyStore>
+    <AndroidEnableMultiDex>True</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AndroidKeyStore>False</AndroidKeyStore>
+    <AndroidEnableMultiDex>True</AndroidEnableMultiDex>
   </PropertyGroup>
 
   <ItemGroup>
