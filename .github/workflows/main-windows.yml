@@ -40,7 +40,7 @@ jobs:
     - name: Publish Android application
       run: |
         dotnet publish .\PwdGen.Desktop\PwdGen.Android.csproj --output .\PwdGen-android -f net8.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=.\keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=file:.\pwd.txt -p:AndroidSigningStorePass=file:.\pwd.txt
-        ls
+        ls PwdGen-android
         
     - name: Create GitHub Release
       id: create_release
