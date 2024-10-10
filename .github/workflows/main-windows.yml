@@ -16,12 +16,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    # - name: Set up MSJDK
-    #   uses: actions/setup-java@v3
-    #   with:
-    #     java-version: '21' # 这里指定你需要的 JDK 版本
-    #     distribution: 'microsoft' # 指定为 MSJDK
-
     - name: Publish win-x64 application
       run: |
         dotnet workload restore .\PwdGen.Desktop\PwdGen.Desktop.csproj
@@ -45,7 +39,7 @@ jobs:
     - name: Publish Android application
       run: |
         dotnet workload restore .\PwdGen.Android\PwdGen.Android.csproj
-        dotnet publish .\PwdGen.Android\PwdGen.Android.csproj --output .\PwdGen-android -f net8.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}\.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=file:${{ github.workspace }}\pwd.txt -p:AndroidSigningStorePass=file:${{ github.workspace }}\pwd.txt -verbosity:diag
+        dotnet publish .\PwdGen.Android\PwdGen.Android.csproj --output .\PwdGen-android -f net8.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}\.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=file:${{ github.workspace }}\pwd.txt -p:AndroidSigningStorePass=file:${{ github.workspace }}\pwd.txt
         ls PwdGen-android
         
     - name: Create GitHub Release
@@ -60,6 +54,6 @@ jobs:
         fail_on_unmatched_files: true
         files: |
           ./release/PwdGen-win-x64.zip
-          ./PwdGen-android/com.tsctsc6.PwdGen-signed.apk
+          ./PwdGen-android/com.tsctsc6.PwdGen-Signed.apk
       env:
         GITHUB_TOKEN: ${{ secrets.Workflow }}
