@@ -37,7 +37,7 @@ jobs:
     
     - name: Get Keystroe
       run: |
-        [System.IO.File]::WriteAllBytes(".\.keystore", [Convert]::FromBase64String(${{ secrets.TSCTSC6_KEYSTORE_BASE64 }}))
+        [System.IO.File]::WriteAllBytes(".\.keystore", [Convert]::FromBase64String("${{ secrets.TSCTSC6_KEYSTORE_BASE64 }}"))
         ${{ secrets.ANDROIDSIGNINGPASSWORD }} > .\pwd.txt
 
     - name: Publish Android application
