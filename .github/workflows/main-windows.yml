@@ -16,11 +16,11 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Set up MSJDK
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17' # 这里指定你需要的 JDK 版本
-        distribution: 'microsoft' # 指定为 MSJDK
+    # - name: Set up MSJDK
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     java-version: '21' # 这里指定你需要的 JDK 版本
+    #     distribution: 'microsoft' # 指定为 MSJDK
 
     - name: Publish win-x64 application
       run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output .\PwdGen-win-x64 --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
