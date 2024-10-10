@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17' # 这里指定你需要的 JDK 版本
-        distribution: 'msjdk' # 指定为 MSJDK
+        distribution: 'microsoft' # 指定为 MSJDK
 
     - name: Publish win-x64 application
       run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output .\PwdGen-win-x64 --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
