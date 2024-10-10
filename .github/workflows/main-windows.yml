@@ -27,7 +27,7 @@ jobs:
     - name: Calculate .NET ZIP SHA256
       id: sha256
       run: |
-        Get-FileHash .\release\PwdGen-win-x64.zip > .\release\PwdGen-win-x64-sha256.txt
+        Get-FileHash .\release\PwdGen-win-x64.zip > .\release\PwdGen-win-x64-sha256.txt | Format-List
     
     - name: Create GitHub Release
       id: create_release
@@ -35,7 +35,7 @@ jobs:
       with:
         tag_name: v1.1.0
         name: v1.1.0
-        body: a
+        body_path: ./release/PwdGen-win-x64-sha256.txt
         draft: false
         prerelease: false
         fail_on_unmatched_files: true
