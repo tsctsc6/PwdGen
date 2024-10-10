@@ -1,4 +1,4 @@
-name: Publish .NET 8 Windows Application
+name: Publish win-x64 and Android Application
 
 on:
   workflow_dispatch:
@@ -45,8 +45,8 @@ jobs:
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: v1.1.0
-        name: v1.1.0
+        tag_name: v1.1.1
+        name: v1.1.1
         body_path: ./release/PwdGen-sha256.txt
         draft: false
         prerelease: false
