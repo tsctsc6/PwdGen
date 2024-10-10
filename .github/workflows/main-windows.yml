@@ -17,7 +17,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Setup MSJDK 17
-      run: winget install Microsoft.OpenJDK.17
+      run: |
+        Invoke-WebRequest -Uri "https://aka.ms/winget-cli" -OutFile winget.appxbundle
+        Add-AppxPackage -Path winget.appxbundle
+        winget install Microsoft.OpenJDK.17 -e
 
     - name: Publish win-x64 application
       run: dotnet publish .\PwdGen.Desktop\PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output .\PwdGen-win-x64 --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
