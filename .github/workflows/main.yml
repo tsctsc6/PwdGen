@@ -17,17 +17,23 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Publish .NET application
-      run: dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/temp_release --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
+      run: dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime win-x64 --output ${{ github.workspace }}/PwdGen-win-x64 --no-self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true
 
     - name: Create .NET Release ZIP
       run: |
         mkdir ${{ github.workspace }}/release
-        zip -r ${{ github.workspace }}/release/dotnet_release.zip ${{ github.workspace }}/temp_release/*
+        zip -r ${{ github.workspace }}/release/PwdGen-win-x64.zip ${{ github.workspace }}/PwdGen-win-x64/*
 
     - name: Calculate .NET ZIP SHA256
-      id: dotnet_sha256
+      id: sha256
       run: |
-        sha256sum ${{ github.workspace }}/release/dotnet_release.zip > ${{ github.workspace }}/release/dotnet_sha256.txt
+        sha256sum ${{ github.workspace }}/release/PwdGen-win-x64.zip > ${{ github.workspace }}/release/PwdGen-win-x64-sha256.txt
+
+    - name: Gen body
+      run: |
+        $t = "win-x64 SHA256 "
+        $sha256 = ${(cat file.txt):0:32}
+        $t$sha256 > ${{ github.workspace }}/release/body.txt
     
     - name: Create GitHub Release
       id: create_release
@@ -35,10 +41,12 @@ jobs:
       with:
         tag_name: v1.1.0
         name: v1.1.0
+        body_path: ${{ github.workspace }}/release/body.txt
         draft: false
         prerelease: false
+        fail_on_unmatched_files: true
         files: |
-          ${{ github.workspace }}/release/dotnet_release.zip
-          ${{ github.workspace }}/release/dotnet_sha256.txt
+          ${{ github.workspace }}/release/PwdGen-win-x64.zip
+          ${{ github.workspace }}/release/PwdGen-win-x64-sha256.txt
       env:
         GITHUB_TOKEN: ${{ secrets.Workflow }}
