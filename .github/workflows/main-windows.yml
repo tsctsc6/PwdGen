@@ -34,12 +34,11 @@ jobs:
     - name: Get Keystroe
       run: |
         [System.IO.File]::WriteAllBytes("${{ github.workspace }}\.keystore", [Convert]::FromBase64String("${{ secrets.TSCTSC6_KEYSTORE_BASE64 }}"))
-        ${{ secrets.ANDROIDSIGNINGPASSWORD }} > ${{ github.workspace }}\pwd.txt
 
     - name: Publish Android application
       run: |
         dotnet workload restore .\PwdGen.Android\PwdGen.Android.csproj
-        dotnet publish .\PwdGen.Android\PwdGen.Android.csproj --output .\PwdGen-android -f net8.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}\.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=file:${{ github.workspace }}\pwd.txt -p:AndroidSigningStorePass=file:${{ github.workspace }}\pwd.txt
+        dotnet publish .\PwdGen.Android\PwdGen.Android.csproj --output .\PwdGen-android -f net8.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}\.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=${{ secrets.ANDROIDSIGNINGPASSWORD }} -p:AndroidSigningStorePass=${{ secrets.ANDROIDSIGNINGPASSWORD }}
         ls PwdGen-android
         
     - name: Create GitHub Release
