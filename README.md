@@ -19,4 +19,24 @@
 * You can backup and restore data in settings.
 
 ## Data Flow (substandard)
-![](./img/DF.svg)
+```mermaid
+flowchart TD
+    A[/"(UserName+MainPwd).UTF8"/];
+    B[/"(MainPwd+Platform).UTF8"/];
+    C[SHA512];
+    D[SHA512];
+    E[XOR];
+    F[RC4 Random Number Sequence Generator];
+    G[Skip SkipCount numbers];
+    H[Choose characters in characterArray, using Random Numbers as index];
+    I[Generated password];
+
+    A -- bytes --> C;
+    B -- bytes --> D;
+    C -- Hash Value --> E;
+    D -- Hash Value --> E;
+    E -- bytes --> F;
+    F -- Random Numbers --> G;
+    G -- Random Numbers --> H;
+    H -- string --> I;
+```
