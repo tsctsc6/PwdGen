@@ -16,21 +16,21 @@ public class AcctData
     public int Id { get; set; }
 
     [DisplayName("User Name")]
-    [System.ComponentModel.DataAnnotations.MaxLength(50)]
+    //[System.ComponentModel.DataAnnotations.MaxLength(50)]
     [SQLite.MaxLength(50)]
     [Indexed]
     [NotNull]
     public string UserName { get; set; } = string.Empty;
 
     [DisplayName("Platform")]
-    [System.ComponentModel.DataAnnotations.MaxLength(50)]
+    //[System.ComponentModel.DataAnnotations.MaxLength(50)]
     [SQLite.MaxLength(50)]
     [Indexed]
     [NotNull]
     public string Platform { get; set; } = string.Empty;
 
     [DisplayName("Remark")]
-    [System.ComponentModel.DataAnnotations.MaxLength(100)]
+    //[System.ComponentModel.DataAnnotations.MaxLength(100)]
     [SQLite.MaxLength(100)]
     [NotNull]
     public string Remark { get; set; } = string.Empty;
@@ -91,39 +91,39 @@ public class AcctData
         DateModified = item.DateModified;
     }
 
-    public string[] GetAllChars()
+    private string[] GetAllChars()
     {
         IEnumerable<string> returnValue = [];
-        List<string> UpLetters = new(10);
-        List<string> LowLetters = new(10);
-        List<string> Numbers = new(10);
-        for (int i = 0; i < 25; i++) UpLetters.Add(Encoding.ASCII.GetString([(byte)(i + 65)]));
-        for (int i = 0; i < 25; i++) LowLetters.Add(Encoding.ASCII.GetString([(byte)(i + 97)]));
-        for (int i = 0; i < 10; i++) Numbers.Add(i.ToString());
-        if (UseUpLetter) returnValue = returnValue.Concat(UpLetters);
-        if (UseLowLetter) returnValue = returnValue.Concat(LowLetters);
-        if (UseNumber) returnValue = returnValue.Concat(Numbers);
+        List<string> upLetters = new(10);
+        List<string> lowLetters = new(10);
+        List<string> numbers = new(10);
+        for (var i = 0; i < 25; i++) upLetters.Add(Encoding.ASCII.GetString([(byte)(i + 65)]));
+        for (var i = 0; i < 25; i++) lowLetters.Add(Encoding.ASCII.GetString([(byte)(i + 97)]));
+        for (var i = 0; i < 10; i++) numbers.Add(i.ToString());
+        if (UseUpLetter) returnValue = returnValue.Concat(upLetters);
+        if (UseLowLetter) returnValue = returnValue.Concat(lowLetters);
+        if (UseNumber) returnValue = returnValue.Concat(numbers);
         if (UseSpChar) returnValue = returnValue.Concat(SpChars);
         return returnValue.ToArray();
     }
 
-    public string Generate(string MainPassword)
+    public string Generate(string mainPassword)
     {
         var chars = GetAllChars();
         if (chars.Length == 0) throw new Exception("Use a character set at least");
-        byte[] hashValue1 = SHA512.HashData(Encoding.UTF8.GetBytes($"UserName:{UserName}{MainPassword}"));
-        byte[] hashValue2 = SHA512.HashData(Encoding.UTF8.GetBytes($"Platform:{MainPassword}{Platform}"));
+        var hashValue1 = SHA512.HashData(Encoding.UTF8.GetBytes($"UserName:{UserName}{mainPassword}"));
+        var hashValue2 = SHA512.HashData(Encoding.UTF8.GetBytes($"Platform:{mainPassword}{Platform}"));
         RC4 rc4 = new(Utility.XOR(hashValue1, hashValue2).ToArray());
         StringBuilder sb = new(PwdLen);
         using var rc4Enumerator = rc4.GetEnumerator();
         if (!rc4Enumerator.MoveNext()) throw new Exception();
-        for (int sc = 0; sc < SkipCount; sc++)
+        for (var sc = 0; sc < SkipCount; sc++)
         {
             if (!rc4Enumerator.MoveNext()) throw new Exception();
         }
-        for (int i = 0; i < PwdLen;)
+        for (var i = 0; i < PwdLen;)
         {
-            int k = -1;
+            var k = -1;
             while (k == -1)
             {
                 k = Utility.Uniformly256(rc4Enumerator.Current, chars.Length);

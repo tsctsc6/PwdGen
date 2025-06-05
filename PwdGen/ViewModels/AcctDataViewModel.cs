@@ -119,7 +119,7 @@ public partial class AcctDataViewModel : ViewModelBase
             MaxPage = 1;
             return;
         }
-        (int quotient, int remainder) = Math.DivRem(TotolCount, PerPage);
+        (var quotient, var remainder) = Math.DivRem(TotolCount, PerPage);
         if (remainder == 0) MaxPage = quotient;
         else MaxPage = quotient + 1;
     }
