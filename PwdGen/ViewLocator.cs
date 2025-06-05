@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using PwdGen.ViewModels;
+using PwdGen.Views;
 
 namespace PwdGen;
 
@@ -11,15 +12,16 @@ public class ViewLocator : IDataTemplate
         if (data is null)
             return null;
 
-        var name = data.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        var type = Type.GetType(name);
-
-        if (type != null)
+        return data switch
         {
-            return (Control)Activator.CreateInstance(type)!;
-        }
-
-        return new TextBlock { Text = "Not Found: " + name };
+            AcctDataAddViewModel => new AcctDataAddView(),
+            AcctDataDetailViewModel => new AcctDataDetailView(),
+            AcctDataEditViewModel => new AcctDataEditView(),
+            AcctDataViewModel => new AcctDataView(),
+            MainViewModel => new MainView(),
+            SettingViewModel => new SettingView(),
+            _ => new TextBlock { Text = "Not Found: ViewModel" }
+        };
     }
 
     public bool Match(object? data)
