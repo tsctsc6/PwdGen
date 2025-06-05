@@ -1,14 +1,18 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PwdGen.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private Stack<ViewModelBase> viewModelStack = new(2);
+    private readonly Stack<ViewModelBase> viewModelStack = new(2);
 
     [ObservableProperty]
     private ViewModelBase currentViewModel = new AcctDataViewModel();
-
+    
+    [ObservableProperty]
+    private Thickness keyboardArea;
+    
     public void Back()
     {
         if (viewModelStack.Count == 0) return;
