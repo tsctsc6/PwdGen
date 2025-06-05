@@ -33,7 +33,7 @@ jobs:
     - name: Publish application
       run: |
         dotnet workload restore ./PwdGen.Desktop/PwdGen.Desktop.csproj
-        dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime ${{ matrix.rid }} --output ./publish --self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:PublishAot=true
+        dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime ${{ matrix.rid }} --output ./publish --self-contained -p:PublishAot=false -p:PublishReadyToRun=true -p:PublishTrimmed=true -p:PublishSingleFile=true
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
