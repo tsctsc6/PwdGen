@@ -4,7 +4,6 @@
     <TargetFramework>net9.0-ios</TargetFramework>
     <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
