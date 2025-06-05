@@ -41,11 +41,11 @@ jobs:
         dotnet publish ./PwdGen.Desktop/PwdGen.Desktop.csproj --configuration Release --runtime ${{ matrix.rid }} --output ./publish --self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:PublishAot=true
 
     - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ matrix.rid }}
-          path: ./publish
-          if-no-files-found: error
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.rid }}
+        path: ./publish
+        if-no-files-found: error
 
   build-android:
     runs-on: windows-latest
