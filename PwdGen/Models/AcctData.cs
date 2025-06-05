@@ -16,21 +16,21 @@ public class AcctData
     public int Id { get; set; }
 
     [DisplayName("User Name")]
-    //[System.ComponentModel.DataAnnotations.MaxLength(50)]
+    [System.ComponentModel.DataAnnotations.MaxLength(50)]
     [SQLite.MaxLength(50)]
     [Indexed]
     [NotNull]
     public string UserName { get; set; } = string.Empty;
 
     [DisplayName("Platform")]
-    //[System.ComponentModel.DataAnnotations.MaxLength(50)]
+    [System.ComponentModel.DataAnnotations.MaxLength(50)]
     [SQLite.MaxLength(50)]
     [Indexed]
     [NotNull]
     public string Platform { get; set; } = string.Empty;
 
     [DisplayName("Remark")]
-    //[System.ComponentModel.DataAnnotations.MaxLength(100)]
+    [System.ComponentModel.DataAnnotations.MaxLength(100)]
     [SQLite.MaxLength(100)]
     [NotNull]
     public string Remark { get; set; } = string.Empty;
