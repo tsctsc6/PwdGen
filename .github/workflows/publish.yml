@@ -1,4 +1,4 @@
-name: Publish win-x64 and Android Application
+name: Publish Application
 
 on:
   workflow_dispatch:
