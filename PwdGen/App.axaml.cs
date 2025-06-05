@@ -16,7 +16,9 @@ public partial class App : Application
 
     public PwdGenDbService DbService { get; } = new();
 
+#pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑添加 'required' 修饰符或声明为可以为 null。
     public MainViewModel MainViewModel { get; private set; }
+#pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑添加 'required' 修饰符或声明为可以为 null。
 
     public TopLevel? TopLevel { get; private set; }
 
@@ -34,8 +36,8 @@ public partial class App : Application
         {
             // Line below is needed to remove Avalonia data validation.
             // Without this line you will get duplicate validations from both Avalonia and CT
-            BindingPlugins.DataValidators.RemoveAt(0);
-            desktop.MainWindow = new MainWindow()
+            // BindingPlugins.DataValidators.RemoveAt(0);
+            desktop.MainWindow = new MainWindow
             {
                 DataContext = MainViewModel
             };
