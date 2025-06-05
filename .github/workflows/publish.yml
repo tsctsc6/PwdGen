@@ -67,7 +67,6 @@ jobs:
       run: |
         dotnet workload restore ./PwdGen.Android/PwdGen.Android.csproj
         dotnet publish ./PwdGen.Android/PwdGen.Android.csproj --output ./publish -f net9.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}/.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=${{ secrets.ANDROIDSIGNINGPASSWORD }} -p:AndroidSigningStorePass=${{ secrets.ANDROIDSIGNINGPASSWORD }}
-        ls PwdGen-android
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
