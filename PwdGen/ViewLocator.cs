@@ -16,7 +16,6 @@ public class ViewLocator : IDataTemplate
         {
             AcctDataAddViewModel => new AcctDataAddView(),
             AcctDataDetailViewModel => new AcctDataDetailView(),
-            AcctDataEditViewModel => new AcctDataEditView(),
             AcctDataViewModel => new AcctDataView(),
             MainViewModel => new MainView(),
             SettingViewModel => new SettingView(),
