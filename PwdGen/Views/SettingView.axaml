@@ -16,7 +16,7 @@
 			<Button Grid.Column="1" Content="Restore" Command="{Binding RestoreCommand}"/>
 		</Grid>
 		<Grid Grid.Row="2" ColumnDefinitions="auto, *" Margin="0 5">
-			<TextBlock Grid.Column="0" Text="Version 1.2.0"/>
+			<TextBlock Grid.Column="0" Text="Version 1.3.0"/>
 		</Grid>
 	</Grid>
 </UserControl>
