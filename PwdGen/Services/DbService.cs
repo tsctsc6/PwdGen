@@ -33,6 +33,20 @@ public class DbService
         
         try
         {
+            var isTableExits = false;
+            await using (var cmd = new SqliteCommand(
+                             """
+                             PRAGMA table_info("AcctData");
+                             """
+                             , Connection))
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    isTableExits = reader.GetBoolean(0);
+                }
+            }
+            if (isTableExits) return Result.Ok(0);
             await using (var cmd = new SqliteCommand(
                              """
                              CREATE TABLE "AcctData" (
