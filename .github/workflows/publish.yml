@@ -136,6 +136,7 @@ jobs:
       run: |
         rm *.pdb
         rm *.dbg
+      continue-on-error: true
 
     - name: Create package
       # Change into the artifacts directory to avoid including the directory itself in the zip archive
