@@ -3,9 +3,6 @@ name: Publish Application
 on:
   workflow_dispatch:
 
-env:
-  Version: 1.2.0
-
 jobs:
   build-desktop:
     strategy:
