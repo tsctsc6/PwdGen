@@ -83,6 +83,9 @@ jobs:
     timeout-minutes: 10
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Create release
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
@@ -90,7 +93,7 @@ jobs:
         gh release create v${{ env.Version }}
         --repo ${{ github.event.repository.full_name }}
         --title v${{ env.Version }}
-        --notes-file changelog.md
+        --notes-file ./changelog.md
         --verify-tag
 
   release2:
