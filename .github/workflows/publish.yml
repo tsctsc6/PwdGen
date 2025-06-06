@@ -36,10 +36,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-${{ matrix.rid }}
-        path: |
-          ./publish
-          !*.dbg
-          !*.pdb
+        path: ./publish
+        exclude: |
+          **/*.pdb
+          **/*.dbg
         if-no-files-found: error
 
   build-android:
