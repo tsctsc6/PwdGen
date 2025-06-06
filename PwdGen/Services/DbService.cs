@@ -231,11 +231,15 @@ public class DbService
         var initResult = await InitAsync();
         if (initResult is ErrResult<int, string> errResult)
             return Result.Err("Init Database Failed." + Environment.NewLine + errResult.Value);
-        SqliteCommand cmd = null;
-        SqliteDataReader reader = null;
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+        SqliteCommand tuplesCmd = null;
+        SqliteCommand countCmd = null;
+        SqliteDataReader tuplesReader = null;
+        SqliteDataReader countReader = null;
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
         try
         {
-            var baseString =
+            var baseTuplesString =
                 """
                 SELECT
                 "Id",
@@ -251,54 +255,72 @@ public class DbService
                 "DateModified"
                 from "AcctData"
                 """;
+            var baseCountString =
+                """
+                SELECT COUNT(*) from "AcctData"
+                """;
             if (string.IsNullOrEmpty(searchString))
             {
-                cmd = new SqliteCommand(
+                tuplesCmd = new SqliteCommand(
                     $"""
-                     {baseString}
+                     {baseTuplesString}
                      LIMIT @Count OFFSET @Offset;
-                     """,
-                    Connection);
-                cmd.Parameters.AddWithValue("@Offset", start);
-                cmd.Parameters.AddWithValue("@Count", count);
+                     """, Connection);
+                tuplesCmd.Parameters.AddWithValue("@Offset", start);
+                tuplesCmd.Parameters.AddWithValue("@Count", count);
+                countCmd = new SqliteCommand(
+                    $"""
+                     {baseCountString}
+                     """, Connection);
             }
             else
             {
-                cmd = new SqliteCommand(
+                tuplesCmd = new SqliteCommand(
                     $"""
-                     {baseString}
+                     {baseTuplesString}
                      WHERE "UserName" LIKE @SearchString
                      OR "Platform" LIKE @SearchString
                      LIMIT @Count OFFSET @Offset;
                      """,
                     Connection);
-                cmd.Parameters.AddWithValue("@Offset", start);
-                cmd.Parameters.AddWithValue("@Count", count);
-                cmd.Parameters.AddWithValue("@SearchString", searchString);
+                tuplesCmd.Parameters.AddWithValue("@Offset", start);
+                tuplesCmd.Parameters.AddWithValue("@Count", count);
+                tuplesCmd.Parameters.AddWithValue("@SearchString", searchString);
+                countCmd = new SqliteCommand(
+                    $"""
+                     {baseCountString}
+                     WHERE "UserName" LIKE @SearchString
+                     OR "Platform" LIKE @SearchString
+                     """, Connection);
             }
 
-            reader = await cmd.ExecuteReaderAsync();
-            var totolCount = 0;
+            tuplesReader = await tuplesCmd.ExecuteReaderAsync();
             List<AcctData> list = [];
-            while (await reader.ReadAsync())
+            while (await tuplesReader.ReadAsync())
             {
                 var acctData = new AcctData
                 {
-                    Id = reader.GetInt32(0),
-                    UserName = reader.GetString(1),
-                    Platform = reader.GetString(2),
-                    Remark = reader.GetString(3),
-                    SkipCount = reader.GetInt32(4),
-                    UseUpLetter = reader.GetBoolean(5),
-                    UseLowLetter = reader.GetBoolean(6),
-                    UseNumber = reader.GetBoolean(7),
-                    UseSpChar = reader.GetBoolean(8),
-                    PwdLen = reader.GetInt32(9),
-                    DateModified = reader.GetInt64(10)
+                    Id = tuplesReader.GetInt32(0),
+                    UserName = tuplesReader.GetString(1),
+                    Platform = tuplesReader.GetString(2),
+                    Remark = tuplesReader.GetString(3),
+                    SkipCount = tuplesReader.GetInt32(4),
+                    UseUpLetter = tuplesReader.GetBoolean(5),
+                    UseLowLetter = tuplesReader.GetBoolean(6),
+                    UseNumber = tuplesReader.GetBoolean(7),
+                    UseSpChar = tuplesReader.GetBoolean(8),
+                    PwdLen = tuplesReader.GetInt32(9),
+                    DateModified = tuplesReader.GetInt64(10)
                 };
                 list.Add(acctData);
             }
-            return Result.Ok((list.ToArray(), totolCount));
+            countReader = await countCmd.ExecuteReaderAsync();
+            var totalCount = 0;
+            while (await countReader.ReadAsync())
+            {
+                totalCount += countReader.GetInt32(0);
+            }
+            return Result.Ok((list.ToArray(), totolCount: totalCount));
         }
         catch (Exception e)
         {
@@ -306,8 +328,10 @@ public class DbService
         }
         finally
         {
-            if (reader != null) await reader.DisposeAsync();
-            if (cmd != null) await cmd.DisposeAsync();
+            if (tuplesReader != null) await tuplesReader.DisposeAsync();
+            if (tuplesCmd != null) await tuplesCmd.DisposeAsync();
+            if (countReader != null) await countReader.DisposeAsync();
+            if (countCmd != null) await countCmd.DisposeAsync();
         }
     }
 }
