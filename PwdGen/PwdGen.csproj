@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PublishAot>false</PublishAot>
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
   
   <ItemGroup>
