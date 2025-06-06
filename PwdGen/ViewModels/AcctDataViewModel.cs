@@ -59,14 +59,10 @@ public partial class AcctDataViewModel : ViewModelBase
     private async Task RefreshAsync()
     {
         AcctDataList.Clear();
-        var searchTree =
-            (await App.Current.DbService.GetAllAsync<AcctData>())
-            .Where(a => a.UserName.Contains(SearchString) ||
-                a.Platform.Contains(SearchString));
-        var AcctDataArray = await searchTree.Skip((CurrentPage - 1) * PerPage)
-            .Take(PerPage).ToArrayAsync();
-        TotolCount = await searchTree.CountAsync();
-        foreach (var item in AcctDataArray)
+        var x = await App.Current.DbService.GetAllAcctDataAsync(
+            SearchString, (CurrentPage - 1) * PerPage, PerPage);
+        TotolCount = x.TotolCount;
+        foreach (var item in x.Result)
         {
             AcctDataList.Add(item);
         }
