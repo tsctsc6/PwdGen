@@ -1,0 +1,27 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="PwdGen.CustomControl.AcctDataInputBox">
+	<Grid RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, auto, auto"
+	      ColumnDefinitions="*, *">
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="User Name" TextWrapping="Wrap"/>
+		<TextBox x:Name="UserName_TextBox" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" MaxLength="50"/>
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="Platform" TextWrapping="Wrap"/>
+		<TextBox x:Name="Platform_TextBox" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" MaxLength="50"/>
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="Remark" TextWrapping="Wrap"/>
+		<TextBox x:Name="Remark_TextBox" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" MaxLength="100"/>
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Skip Count" TextWrapping="Wrap"/>
+		<NumericUpDown x:Name="SkipCount_NumericUpDown" Grid.Row="3" Grid.Column="1" FormatString="0" Minimum="0" Maximum="255"/>
+		<TextBlock Grid.Row="4" Grid.Column="0" Text="Use Up Letter" TextWrapping="Wrap"/>
+		<CheckBox x:Name="UseUpLetter_CheckBox" Grid.Row="4" Grid.Column="1"/>
+		<TextBlock Grid.Row="5" Grid.Column="0" Text="Use Low Letter" TextWrapping="Wrap"/>
+		<CheckBox x:Name="UseLowLetter_CheckBox" Grid.Row="5" Grid.Column="1"/>
+		<TextBlock Grid.Row="6" Grid.Column="0" Text="Use Number" TextWrapping="Wrap"/>
+		<CheckBox x:Name="UseNumber_CheckBox" Grid.Row="6" Grid.Column="1"/>
+		<TextBlock Grid.Row="7" Grid.Column="0" Text="Use Special Character" TextWrapping="Wrap"/>
+		<CheckBox x:Name="UseSpecialCharacter_CheckBox" Grid.Row="7" Grid.Column="1"/>
+		<TextBlock Grid.Row="8" Grid.Column="0" Text="Password Length" TextWrapping="Wrap"/>
+		<NumericUpDown x:Name="PasswordLength_NumericUpDown" Grid.Row="8" Grid.Column="1" FormatString="0" Minimum="1" Maximum="255"/>
+		<TextBlock x:Name="DateModified_TextBlock_Key" Grid.Row="9" Grid.Column="0" Text="Date Modified" TextWrapping="Wrap"/>
+		<TextBlock x:Name="DateModified_TextBlock_Value" Grid.Row="9" Grid.Column="1" TextWrapping="Wrap"/>
+	</Grid>
+</UserControl>
