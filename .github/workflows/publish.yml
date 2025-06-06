@@ -131,6 +131,12 @@ jobs:
             chmod +x release/PwdGen.Desktop.app/Contents/MacOS/PwdGen.Desktop
         fi
 
+    - name: Remove debug symbles
+      working-directory: release/
+      run: |
+        rm *.pdb
+        rm *.dbg
+
     - name: Create package
       # Change into the artifacts directory to avoid including the directory itself in the zip archive
       working-directory: release/
