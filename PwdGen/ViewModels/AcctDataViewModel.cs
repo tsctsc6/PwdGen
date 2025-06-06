@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PwdGen.Models;
 using System.Collections.ObjectModel;
+using RustSharp;
 
 namespace PwdGen.ViewModels;
 
@@ -59,12 +60,17 @@ public partial class AcctDataViewModel : ViewModelBase
     private async Task RefreshAsync()
     {
         AcctDataList.Clear();
-        var x = await App.Current.DbService.GetAllAcctDataAsync(
+        var result = await App.Current.DbService.GetAllAcctDataAsync(
             SearchString, (CurrentPage - 1) * PerPage, PerPage);
-        TotolCount = x.TotolCount;
-        foreach (var item in x.Result)
+        switch (result)
         {
-            AcctDataList.Add(item);
+            case OkResult<(AcctData[] Result, int TotolCount), string> okResult:
+                TotolCount = okResult.Value.TotolCount;
+                foreach (var item in okResult.Value.Result) AcctDataList.Add(item);
+                break;
+            case ErrResult<(AcctData[] Result, int TotolCount), string> errResult:
+                await Console.Error.WriteLineAsync(errResult.Value);
+                break;
         }
     }
 
@@ -115,7 +121,7 @@ public partial class AcctDataViewModel : ViewModelBase
             MaxPage = 1;
             return;
         }
-        (var quotient, var remainder) = Math.DivRem(TotolCount, PerPage);
+        var (quotient, remainder) = Math.DivRem(TotolCount, PerPage);
         if (remainder == 0) MaxPage = quotient;
         else MaxPage = quotient + 1;
     }

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PwdGen.Models;
+using RustSharp;
 
 namespace PwdGen.ViewModels;
 
@@ -25,9 +26,10 @@ public partial class AcctDataAddViewModel : ViewModelBase
     private async Task SaveAsync()
     {
         InputAcctData.DateModified = DateTime.UtcNow.ToBinary();
-        var r = await App.Current.DbService.InsertAcctDataAsync(InputAcctData);
+        var result = await App.Current.DbService.InsertAcctDataAsync(InputAcctData);
+        if (result is ErrResult<int, string> errResult)
+            await Console.Error.WriteLineAsync(errResult.Value);
         App.Current.MainViewModel.Back();
-        if (r == 0) return;
     }
 
     [RelayCommand]
