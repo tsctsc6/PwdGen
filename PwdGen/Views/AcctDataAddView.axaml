@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PwdGen.ViewModels"
-			 xmlns:pgc="clr-namespace:Avalonia.PropertyGrid.Controls;assembly=Avalonia.PropertyGrid"
+             xmlns:cc="clr-namespace:PwdGen.CustomControl"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PwdGen.Views.AcctDataAddView"
 			 x:DataType="vm:AcctDataAddViewModel">
@@ -14,7 +14,8 @@
 			<Button Grid.Column="3" Content="Save" Command="{Binding SaveCommand}"/>
 		</Grid>
 		<ScrollViewer Grid.Row="1">
-			<pgc:PropertyGrid DataContext="{Binding InputAcctData}"/>
+			<cc:AcctDataInputBox AcctData="{Binding InputAcctData}" IsReadOnly="False"
+			                     IsDateModifiedVisible="False"/>
 		</ScrollViewer>
 		<Grid Grid.Row="2" ColumnDefinitions="*, auto">
 			<TextBox Grid.Column="0" PasswordChar="*" Text="{Binding MainPassword}"/>

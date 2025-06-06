@@ -14,6 +14,12 @@ public partial class AcctDataDetailViewModel : ViewModelBase
 
     [ObservableProperty]
     private string password = string.Empty;
+    
+    [ObservableProperty]
+    private bool isEditing = false;
+    
+    [ObservableProperty]
+    private bool isSaving = false;
 
     public AcctDataDetailViewModel(AcctData item)
     {
@@ -26,10 +32,23 @@ public partial class AcctDataDetailViewModel : ViewModelBase
         App.Current.MainViewModel.Back();
     }
 
-    [RelayCommand]
-    private void Edit()
+    async partial void OnIsEditingChanged(bool value)
     {
-        App.Current.MainViewModel.Forward(new AcctDataEditViewModel(AcctData));
+        if (value) return;
+        IsSaving = true;
+        AcctData.DateModified = DateTime.UtcNow.ToBinary();
+        var r = await App.Current.DbService.UpdateAsync(AcctData);
+        IsSaving = false;
+    }
+    
+    [RelayCommand]
+    private async Task DeleteAsync()
+    {
+        IsSaving = true;
+        var r = await App.Current.DbService.DeleteAsync(AcctData);
+        if (r == 0) return;
+        IsSaving = false;
+        App.Current.MainViewModel.Back();
     }
 
     [RelayCommand]
