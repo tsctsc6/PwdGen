@@ -87,9 +87,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       run: >
-        gh release create v${{ env.Version }}
+        gh release create v${{ vars.RELEASE_VERSION }}
         --repo ${{ github.event.repository.full_name }}
-        --title v${{ env.Version }}
+        --title v${{ vars.RELEASE_VERSION }}
         --notes-file ./changelog.md
 
   release2:
@@ -131,12 +131,12 @@ jobs:
     - name: Create package
       # Change into the artifacts directory to avoid including the directory itself in the zip archive
       working-directory: release/
-      run: zip -r ../PwdGen-${{ matrix.rid }}-v{env.Version}.zip .
+      run: zip -r ../PwdGen-${{ matrix.rid }}-v${{ vars.RELEASE_VERSION }}.zip .
 
     - name: Upload release asset
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       run: >
-        gh release upload v${{ env.Version }}
-        PwdGen-${{ matrix.rid }}-v{env.Version}.zip
+        gh release upload v${{ vars.RELEASE_VERSION }}
+        PwdGen-${{ matrix.rid }}-v${{ vars.RELEASE_VERSION }}.zip
         --repo ${{ github.event.repository.full_name }}
