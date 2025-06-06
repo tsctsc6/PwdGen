@@ -253,30 +253,28 @@ public class DbService
                 """;
             if (string.IsNullOrEmpty(searchString))
             {
-                await using var cmd = new SqliteCommand(
+                cmd = new SqliteCommand(
                     $"""
                      {baseString}
-                     OFFSET @Offset LIMIT @Count
+                     LIMIT @Count OFFSET @Offset;
                      """,
                     Connection);
                 cmd.Parameters.AddWithValue("@Offset", start);
                 cmd.Parameters.AddWithValue("@Count", count);
-                reader = await cmd.ExecuteReaderAsync();
             }
             else
             {
-                await using var cmd = new SqliteCommand(
+                cmd = new SqliteCommand(
                     $"""
                      {baseString}
                      WHERE "UserName" LIKE @SearchString
                      OR "Platform" LIKE @SearchString
-                     OFFSET @Offset LIMIT @Count
+                     LIMIT @Count OFFSET @Offset;
                      """,
                     Connection);
                 cmd.Parameters.AddWithValue("@Offset", start);
                 cmd.Parameters.AddWithValue("@Count", count);
                 cmd.Parameters.AddWithValue("@SearchString", searchString);
-                reader = await cmd.ExecuteReaderAsync();
             }
 
             reader = await cmd.ExecuteReaderAsync();
