@@ -231,7 +231,8 @@ public class DbService
         var initResult = await InitAsync();
         if (initResult is ErrResult<int, string> errResult)
             return Result.Err("Init Database Failed." + Environment.NewLine + errResult.Value);
-        SqliteDataReader? reader = null;
+        SqliteCommand cmd = null;
+        SqliteDataReader reader = null;
         try
         {
             var baseString =
@@ -278,6 +279,7 @@ public class DbService
                 reader = await cmd.ExecuteReaderAsync();
             }
 
+            reader = await cmd.ExecuteReaderAsync();
             var totolCount = 0;
             List<AcctData> list = [];
             while (await reader.ReadAsync())
@@ -307,6 +309,7 @@ public class DbService
         finally
         {
             if (reader != null) await reader.DisposeAsync();
+            if (cmd != null) await cmd.DisposeAsync();
         }
     }
 }
