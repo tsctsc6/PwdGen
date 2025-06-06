@@ -63,7 +63,7 @@ jobs:
     - name: Publish Android application
       run: |
         dotnet workload restore ./PwdGen.Android/PwdGen.Android.csproj
-        dotnet publish ./PwdGen.Android/PwdGen.Android.csproj --output ./publish -f net9.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}/.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGNING_PASSWORD }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGNING_PASSWORD }}
+        dotnet publish ./PwdGen.Android/PwdGen.Android.csproj --output ./publish -f net9.0-android -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${{ github.workspace }}/.keystore -p:AndroidSigningKeyAlias=tsctsc6 -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGNING_PASSWORD }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGNING_PASSWORD }} -p:PublishAot=true -p:PublishReadyToRun=true -p:PublishTrimmed=true -p:PublishSingleFile=true
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
