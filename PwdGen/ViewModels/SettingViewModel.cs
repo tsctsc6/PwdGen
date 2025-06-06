@@ -29,7 +29,7 @@ public partial class SettingViewModel : ViewModelBase
         });
         if (file is null) return;
         await App.Current.DbService.CloseAsync();
-        await using var localStream = new FileStream(PwdGenDbService.DatabasePath, FileMode.Open);
+        await using var localStream = new FileStream(DbService.DatabasePath, FileMode.Open);
         await using var backupSteam = await file.OpenWriteAsync();
         await localStream.CopyToAsync(backupSteam);
         await backupSteam.FlushAsync();
@@ -54,7 +54,7 @@ public partial class SettingViewModel : ViewModelBase
         using var file = files[0];
         await App.Current.DbService.CloseAsync();
         await using var restoreSteam = await file.OpenReadAsync();
-        await using var localStream = new FileStream(PwdGenDbService.DatabasePath, FileMode.Create);
+        await using var localStream = new FileStream(DbService.DatabasePath, FileMode.Create);
         await restoreSteam.CopyToAsync(localStream);
         await localStream.FlushAsync();
         App.Current.MainViewModel.Back();

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PwdGen.Models;
+using RustSharp;
 
 namespace PwdGen.ViewModels;
 
@@ -37,7 +38,9 @@ public partial class AcctDataDetailViewModel : ViewModelBase
         if (value) return;
         IsSaving = true;
         AcctData.DateModified = DateTime.UtcNow.ToBinary();
-        var r = await App.Current.DbService.UpdateAsync(AcctData);
+        var result = await App.Current.DbService.UpdateAcctDataAsync(AcctData);
+        if (result is ErrResult<int, string> errResult)
+            await Console.Error.WriteLineAsync(errResult.Value);
         IsSaving = false;
     }
     
@@ -45,8 +48,9 @@ public partial class AcctDataDetailViewModel : ViewModelBase
     private async Task DeleteAsync()
     {
         IsSaving = true;
-        var r = await App.Current.DbService.DeleteAsync(AcctData);
-        if (r == 0) return;
+        var result = await App.Current.DbService.DeleteAcctDataAsync(AcctData);
+        if (result is ErrResult<int, string> errResult)
+            await Console.Error.WriteLineAsync(errResult.Value);
         IsSaving = false;
         App.Current.MainViewModel.Back();
     }

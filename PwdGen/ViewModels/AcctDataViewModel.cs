@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PwdGen.Models;
 using System.Collections.ObjectModel;
+using RustSharp;
 
 namespace PwdGen.ViewModels;
 
@@ -20,7 +21,7 @@ public partial class AcctDataViewModel : ViewModelBase
     private int maxPage = 1;
 
     [ObservableProperty]
-    private int totolCount = 0;
+    private int totalCount = 0;
 
     public ObservableCollection<AcctData> AcctDataList { get; } = [];
 
@@ -59,16 +60,17 @@ public partial class AcctDataViewModel : ViewModelBase
     private async Task RefreshAsync()
     {
         AcctDataList.Clear();
-        var searchTree =
-            (await App.Current.DbService.GetAllAsync<AcctData>())
-            .Where(a => a.UserName.Contains(SearchString) ||
-                a.Platform.Contains(SearchString));
-        var AcctDataArray = await searchTree.Skip((CurrentPage - 1) * PerPage)
-            .Take(PerPage).ToArrayAsync();
-        TotolCount = await searchTree.CountAsync();
-        foreach (var item in AcctDataArray)
+        var result = await App.Current.DbService.GetAllAcctDataAsync(
+            SearchString, (CurrentPage - 1) * PerPage, PerPage);
+        switch (result)
         {
-            AcctDataList.Add(item);
+            case OkResult<(AcctData[] Result, int TotolCount), string> okResult:
+                TotalCount = okResult.Value.TotolCount;
+                foreach (var item in okResult.Value.Result) AcctDataList.Add(item);
+                break;
+            case ErrResult<(AcctData[] Result, int TotolCount), string> errResult:
+                await Console.Error.WriteLineAsync(errResult.Value);
+                break;
         }
     }
 
@@ -95,7 +97,7 @@ public partial class AcctDataViewModel : ViewModelBase
         CalculateMaxPage();
     }
 
-    partial void OnTotolCountChanged(int value)
+    partial void OnTotalCountChanged(int value)
     {
         CalculateMaxPage();
     }
@@ -114,12 +116,12 @@ public partial class AcctDataViewModel : ViewModelBase
 
     private void CalculateMaxPage()
     {
-        if (TotolCount == 0)
+        if (TotalCount == 0)
         {
             MaxPage = 1;
             return;
         }
-        (var quotient, var remainder) = Math.DivRem(TotolCount, PerPage);
+        var (quotient, remainder) = Math.DivRem(TotalCount, PerPage);
         if (remainder == 0) MaxPage = quotient;
         else MaxPage = quotient + 1;
     }

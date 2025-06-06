@@ -91,6 +91,7 @@ public partial class AcctDataInputBox : UserControl
 
     private void LoadDataModel()
     {
+        if (AcctData is null) return;
         UserName_TextBox.Text = AcctData.UserName;
         Platform_TextBox.Text = AcctData.Platform;
         Remark_TextBox.Text = AcctData.Remark;
