@@ -37,7 +37,7 @@ public partial class AcctDataDetailViewModel : ViewModelBase
         if (value) return;
         IsSaving = true;
         AcctData.DateModified = DateTime.UtcNow.ToBinary();
-        var r = await App.Current.DbService.UpdateAsync(AcctData);
+        var r = await App.Current.DbService.UpdateAcctDataAsync(AcctData);
         IsSaving = false;
     }
     
@@ -45,7 +45,7 @@ public partial class AcctDataDetailViewModel : ViewModelBase
     private async Task DeleteAsync()
     {
         IsSaving = true;
-        var r = await App.Current.DbService.DeleteAsync(AcctData);
+        var r = await App.Current.DbService.DeleteAcctDataAsync(AcctData);
         if (r == 0) return;
         IsSaving = false;
         App.Current.MainViewModel.Back();

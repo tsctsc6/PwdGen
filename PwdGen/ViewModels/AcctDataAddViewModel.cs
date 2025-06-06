@@ -25,7 +25,7 @@ public partial class AcctDataAddViewModel : ViewModelBase
     private async Task SaveAsync()
     {
         InputAcctData.DateModified = DateTime.UtcNow.ToBinary();
-        var r = await App.Current.DbService.InsertAsync(InputAcctData);
+        var r = await App.Current.DbService.InsertAcctDataAsync(InputAcctData);
         App.Current.MainViewModel.Back();
         if (r == 0) return;
     }
