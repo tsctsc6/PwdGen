@@ -21,7 +21,7 @@ public partial class AcctDataViewModel : ViewModelBase
     private int maxPage = 1;
 
     [ObservableProperty]
-    private int totolCount = 0;
+    private int totalCount = 0;
 
     public ObservableCollection<AcctData> AcctDataList { get; } = [];
 
@@ -65,7 +65,7 @@ public partial class AcctDataViewModel : ViewModelBase
         switch (result)
         {
             case OkResult<(AcctData[] Result, int TotolCount), string> okResult:
-                TotolCount = okResult.Value.TotolCount;
+                TotalCount = okResult.Value.TotolCount;
                 foreach (var item in okResult.Value.Result) AcctDataList.Add(item);
                 break;
             case ErrResult<(AcctData[] Result, int TotolCount), string> errResult:
@@ -97,7 +97,7 @@ public partial class AcctDataViewModel : ViewModelBase
         CalculateMaxPage();
     }
 
-    partial void OnTotolCountChanged(int value)
+    partial void OnTotalCountChanged(int value)
     {
         CalculateMaxPage();
     }
@@ -116,12 +116,12 @@ public partial class AcctDataViewModel : ViewModelBase
 
     private void CalculateMaxPage()
     {
-        if (TotolCount == 0)
+        if (TotalCount == 0)
         {
             MaxPage = 1;
             return;
         }
-        var (quotient, remainder) = Math.DivRem(TotolCount, PerPage);
+        var (quotient, remainder) = Math.DivRem(TotalCount, PerPage);
         if (remainder == 0) MaxPage = quotient;
         else MaxPage = quotient + 1;
     }
