@@ -94,7 +94,6 @@ jobs:
         --repo ${{ github.event.repository.full_name }}
         --title v${{ env.Version }}
         --notes-file ./changelog.md
-        --verify-tag
 
   release2:
     needs:
