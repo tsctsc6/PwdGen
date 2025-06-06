@@ -37,9 +37,6 @@ jobs:
       with:
         name: build-${{ matrix.rid }}
         path: ./publish
-        exclude: |
-          **/*.pdb
-          **/*.dbg
         if-no-files-found: error
 
   build-android:
@@ -131,10 +128,15 @@ jobs:
             chmod +x release/PwdGen.Desktop.app/Contents/MacOS/PwdGen.Desktop
         fi
 
-    - name: Remove debug symbles
+    - name: Remove debug symbles - pdb
       working-directory: release/
       run: |
         rm *.pdb
+      continue-on-error: true
+    
+    - name: Remove debug symbles - dbg
+      working-directory: release/
+      run: |
         rm *.dbg
       continue-on-error: true
 
