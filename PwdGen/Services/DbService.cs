@@ -278,8 +278,8 @@ public class DbService
                 tuplesCmd = new SqliteCommand(
                     $"""
                      {baseTuplesString}
-                     WHERE "UserName" LIKE @SearchString
-                     OR "Platform" LIKE @SearchString
+                     WHERE "UserName" LIKE '%' || @SearchString || '%'
+                     OR "Platform" LIKE '%' || @SearchString || '%'
                      LIMIT @Count OFFSET @Offset;
                      """,
                     Connection);
@@ -289,8 +289,8 @@ public class DbService
                 countCmd = new SqliteCommand(
                     $"""
                      {baseCountString}
-                     WHERE "UserName" LIKE @SearchString
-                     OR "Platform" LIKE @SearchString
+                     WHERE "UserName" LIKE '%' || @SearchString || '%'
+                     OR "Platform" LIKE '%' || @SearchString || '%'
                      """, Connection);
                 countCmd.Parameters.AddWithValue("@SearchString", searchString);
             }
