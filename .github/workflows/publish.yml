@@ -36,7 +36,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-${{ matrix.rid }}
-        path: ./publish
+        path: |
+          ./publish
+          !./publish/**/*.pdb
+          !./publish/**/*.dbg
         if-no-files-found: error
 
   build-android:
@@ -127,18 +130,6 @@ jobs:
         if [ -f release/PwdGen.Desktop.app/Contents/MacOS/PwdGen.Desktop ]; then
             chmod +x release/PwdGen.Desktop.app/Contents/MacOS/PwdGen.Desktop
         fi
-
-    - name: Remove debug symbles - pdb
-      working-directory: release/
-      run: |
-        rm *.pdb
-      continue-on-error: true
-    
-    - name: Remove debug symbles - dbg
-      working-directory: release/
-      run: |
-        rm *.dbg
-      continue-on-error: true
 
     - name: Create package
       # Change into the artifacts directory to avoid including the directory itself in the zip archive
