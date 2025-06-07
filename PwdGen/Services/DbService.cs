@@ -292,6 +292,7 @@ public class DbService
                      WHERE "UserName" LIKE @SearchString
                      OR "Platform" LIKE @SearchString
                      """, Connection);
+                countCmd.Parameters.AddWithValue("@SearchString", searchString);
             }
 
             tuplesReader = await tuplesCmd.ExecuteReaderAsync();
