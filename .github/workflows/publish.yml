@@ -93,7 +93,7 @@ jobs:
         gh release create v${{ vars.RELEASE_VERSION }}
         --repo ${{ github.event.repository.full_name }}
         --title v${{ vars.RELEASE_VERSION }}
-        --notes-file ./changelog.md
+        --generate-notes
 
   release2:
     needs:
